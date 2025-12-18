@@ -108,17 +108,23 @@
     }
   </style>
 </head>
+<script>
+if (domain === "vapp.uk") {
+    window.location.href = "https://vapp.uk";
+}
+</script>
+
 <body>
   <div class="container">
     <h1>Oh Hi!</h1>
 
     <p style="font-size: 1.2rem; margin-bottom: 2rem;">
-      This is a proxy to <strong>hosting.voidium.uk</strong>. this domain lets you access the websites hosted on the voidium server.
+      This is a proxy to <strong>vapp.uk</strong>. this domain lets you access the websites hosted on the voidium server.
     </p>
 
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-      <a href="https://hosting.voidium.uk" target="_blank" style="text-decoration: none;">
-        <button>Go to hosting.voidium.uk</button>
+      <a href="https://vapp.uk" target="_blank" style="text-decoration: none;">
+        <button>Go to vapp.uk</button>
       </a>
 
       <a href="https://discord.gg/E2Kywq9Uk5" target="_blank" style="text-decoration: none;">
@@ -126,11 +132,5 @@
       </a>
     </div>
   </div>
-  <script>
-    const domain = window.location.hostname;
-    if (domain === "voidium.uk") {
-      window.location.href = "https://voidium.uk/void";
-    }
-  </script>
-</body>
-</html>
+</body> 
+</html>        
