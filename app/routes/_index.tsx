@@ -1,7 +1,9 @@
+import { redirect } from "@remix-run/cloudflare";
+
+export async function loader() {
+  return redirect("/home");
+}
+
 export default function Index() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <h1 className="text-4xl font-bold">Welcome to Remix</h1>
-    </div>
-  );
+  return null;
 }

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Worker Publisher</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+  <title>Voidium Hosting</title>
+  <link rel="icon" href="https://olibot1107.github.io/Oli-cdn/cdn/Untitled-1.png">
   <style>
     * {
       margin: 0;
@@ -110,43 +110,21 @@
 </head>
 <body>
   <div class="container">
-    <h1>Worker Publisher</h1>
+    <h1>Oh Hi!</h1>
 
-    <form id="deployForm">
-      <div class="form-group">
-        <label for="scriptName">Script Name</label>
-        <input type="text" id="scriptName" placeholder="my-worker" required />
-      </div>
+    <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+      This is a proxy to <strong>hosting.voidium.uk</strong>. this domain lets you access the website hosted on the voidium server.
+    </p>
 
-      <div class="form-group">
-        <label for="code">Worker Code</label>
-        <textarea id="code">export default {
-  async fetch(request) {
-    return new Response("Hello world!");
-  }
-};</textarea>
-      </div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="https://hosting.voidium.uk" target="_blank" style="text-decoration: none;">
+        <button>Go to hosting.voidium.uk</button>
+      </a>
 
-      <button type="submit">Deploy Worker</button>
-    </form>
-
-    <div id="result"></div>
+      <a href="https://discord.gg/voidium" target="_blank" style="text-decoration: none;">
+        <button style="background: #5865f2;">Join Discord</button>
+      </a>
+    </div>
   </div>
-
-  <script>
-    document.getElementById("deployForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("scriptName").value;
-      const result = document.getElementById("result");
-
-      result.innerHTML = `
-        <div class="result success">
-          Pretending to deploy "<strong>${name}</strong>" 😄<br>
-          Hook this up to whatever backend you want.
-        </div>
-      `;
-    });
-  </script>
 </body>
 </html>
