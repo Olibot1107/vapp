@@ -108,23 +108,18 @@
     }
   </style>
 </head>
-<script>
-if (domain === "vapp.uk") {
-    window.location.href = "https://vapp.uk";
-}
-</script>
 
 <body>
   <div class="container">
-    <h1>Oh Hi!</h1>
+    <h1>Welcome!</h1>
 
     <p style="font-size: 1.2rem; margin-bottom: 2rem;">
-      This is a proxy to <strong>vapp.uk</strong>. this domain lets you access the websites hosted on the voidium server.
+      Voidium is a hosting comapny that has been doing for <strong id="time"></strong>. we run discord bots and stuff join our discord to make a account and see you hosting
     </p>
 
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-      <a href="https://vapp.uk" target="_blank" style="text-decoration: none;">
-        <button>Go to vapp.uk</button>
+      <a href="https://hosting.voidium.uk" target="_blank" style="text-decoration: none;">
+        <button>Go to hosting.voidium.uk</button>
       </a>
 
       <a href="https://discord.gg/E2Kywq9Uk5" target="_blank" style="text-decoration: none;">
@@ -132,5 +127,48 @@ if (domain === "vapp.uk") {
       </a>
     </div>
   </div>
-</body> 
-</html>        
+
+<div id="time"></div>
+
+<script>
+    function updateCounter() {
+        const domain = window.location.hostname;
+        if (domain === "vapp.uk") {
+            window.location.href = "https://vapp.uk";
+        }
+
+        // Target Date: Sunday, 7 September 2025 20:26:00
+        const start = new Date(2025, 8, 7, 20, 26, 0); // Month is 0-indexed (8 = September)
+        const now = new Date();
+
+        let years = now.getFullYear() - start.getFullYear();
+        let months = now.getMonth() - start.getMonth();
+        let days = now.getDate() - start.getDate();
+        let hours = now.getHours() - start.getHours();
+        let minutes = now.getMinutes() - start.getMinutes();
+        let seconds = now.getSeconds() - start.getSeconds();
+
+        // Adjust for negative values (borrowing from larger units)
+        if (seconds < 0) { seconds += 60; minutes--; }
+        if (minutes < 0) { minutes += 60; hours--; }
+        if (hours < 0) { hours += 24; days--; }
+        if (days < 0) {
+            // Get days in the previous month to borrow correctly
+            const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+            days += prevMonth;
+            months--;
+        }
+        if (months < 0) { months += 12; years--; }
+
+        document.getElementById("time").innerHTML = 
+            `${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    }
+
+    // Run once and then update every second
+    updateCounter();
+    setInterval(updateCounter, 1000);
+</script>
+
+
+</body>
+</html>
