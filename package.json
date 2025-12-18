@@ -37,7 +37,7 @@
 	},
 	"private": true,
 	"scripts": {
-		"build": "",
+		"build": "remix vite:build",
 		"cf-typegen": "wrangler types",
 		"check": "tsc && remix vite:build && wrangler deploy --dry-run",
 		"deploy": "wrangler deploy",
