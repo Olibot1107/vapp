@@ -156,6 +156,43 @@ export default function Index() {
           </div>
         </div>
 
+        <div style={{
+          border: '4px solid #1a1a1a',
+          background: '#dcfce7',
+          padding: '1.5rem',
+          boxShadow: '8px 8px 0px #22c55e',
+          marginBottom: '2rem'
+        }}>
+          <h3 style={{
+            fontSize: '1.5rem',
+            fontWeight: '900',
+            marginBottom: '1rem',
+            color: '#166534',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Getting Started
+          </h3>
+          <p style={{ marginBottom: '1rem', color: '#166534' }}>
+            Ready to host your bot? It's simple:
+          </p>
+          <ol style={{ paddingLeft: '1.5rem', color: '#166534' }}>
+            <li style={{ marginBottom: '0.5rem' }}>Join our Discord server</li>
+            <li style={{ marginBottom: '0.5rem' }}>Create your account</li>
+            <li style={{ marginBottom: '0.5rem' }}>Create a server</li>
+            <li style={{ marginBottom: '0.5rem' }}>Login on the dashboard</li>
+            <li style={{ marginBottom: '0.5rem' }}>Upload your bot files</li>
+            <li>Start your bot and go live!</li>
+          </ol>
+        </div>
+
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <a href="https://hosting.voidium.uk" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <button
