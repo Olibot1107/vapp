@@ -51,7 +51,7 @@ export default function Index() {
 
     // Run once and then update every 10 seconds (less frequent updates)
     updateCounter();
-    const interval = setInterval(updateCounter, 1000);
+    const interval = setInterval(updateCounter, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -86,7 +86,7 @@ export default function Index() {
           textAlign: 'center'
         }}>
           <p style={{ fontSize: '1.2rem', margin: '0', lineHeight: '1.6' }}>
-            Voidium specializes in <strong>Discord bot hosting</strong> and has been providing reliable hosting for <strong>{timeString}</strong>. We keep your bots online 24/7 so you can focus on coding amazing features. Join our Discord to create your account and get started!
+            Hey there! We're <strong>Voidium</strong>, and we absolutely love hosting Discord bots. We've been keeping bots running smoothly for <strong>{timeString}</strong> now, and we're all about making sure your bots stay online 24/7 so you can focus on the fun stuff - coding awesome features! Come join our Discord community to create your account and get your bot up and running.
           </p>
         </div>
 
@@ -118,7 +118,7 @@ export default function Index() {
                 </svg>
                 Discord Bot Hosting
               </h3>
-              <p>Our specialty! Host your Discord bots 24/7 with zero downtime. We handle all the infrastructure so you can focus on coding amazing bots.</p>
+              <p>Hey, this is what we live for! Keep your Discord bots running 24/7 without any interruptions. We take care of all the technical stuff so you can spend your time building cool features and having fun with your community.</p>
             </div>
 
             <div style={{
@@ -135,7 +135,7 @@ export default function Index() {
                 </svg>
                 Website Hosting
               </h3>
-              <p>Also available - free hosting for your websites and web applications. Perfect companion to your Discord bots.</p>
+              <p>Oh, and if you need a website too, we've got you covered! Host your personal sites, landing pages, or web apps completely free. Great for showcasing your bot's features or building a community hub.</p>
             </div>
 
             <div style={{
@@ -178,7 +178,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>100% Free</h4>
-                <p style={{ fontSize: '0.9rem' }}>No hidden fees, no premium tiers. Just free hosting for everyone.</p>
+                <p style={{ fontSize: '0.9rem' }}>Seriously, it's completely free with zero hidden costs or premium traps. We believe everyone should have access to hosting!</p>
               </div>
 
               <div style={{
@@ -194,7 +194,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Lightning Fast</h4>
-                <p style={{ fontSize: '0.9rem' }}>High-performance SSD storage with dedicated CPU cores for instant bot responses.</p>
+                <p style={{ fontSize: '0.9rem' }}>Blazing fast SSD storage and dedicated CPU cores mean your bot responds instantly - no lag, no waiting!</p>
               </div>
 
               <div style={{
@@ -210,7 +210,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Secure & SSL</h4>
-                <p style={{ fontSize: '0.9rem' }}>HTTPS encryption included for all your hosted content.</p>
+                <p style={{ fontSize: '0.9rem' }}>Everything is automatically secured with HTTPS encryption. Your users' data stays safe and private.</p>
               </div>
 
               <div style={{
@@ -226,7 +226,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Community Support</h4>
-                <p style={{ fontSize: '0.9rem' }}>Join our Discord for help, updates, and bot developer community.</p>
+                <p style={{ fontSize: '0.9rem' }}>Hop into our friendly Discord server for help, chat with other bot developers, and stay updated on new features!</p>
               </div>
 
               <div style={{
@@ -245,7 +245,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>24/7 Uptime</h4>
-                <p style={{ fontSize: '0.9rem' }}>Your bots stay online around the clock with our reliable infrastructure.</p>
+                <p style={{ fontSize: '0.9rem' }}>Never worry about downtime! Your bots run around the clock with our rock-solid, always-online infrastructure.</p>
               </div>
 
               <div style={{
@@ -262,7 +262,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Easy Setup</h4>
-                <p style={{ fontSize: '0.9rem' }}>Get your bot running in minutes with our simple deployment process.</p>
+                <p style={{ fontSize: '0.9rem' }}>Getting started is a breeze! Upload your bot files and you'll be live in just a few clicks. Seriously, it's that simple.</p>
               </div>
             </div>
           </div>
