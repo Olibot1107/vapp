@@ -79,7 +79,7 @@ export default function Index() {
 
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <p style={{ fontSize: '1.2rem', marginBottom: '1rem', lineHeight: '1.6' }}>
-            Hey! We're <strong>Voidium</strong>, your go-to for free Discord bot hosting. We've been keeping bots online for <strong>{timeString}</strong>.
+            Hey we are voidium a hosting comapny we have been doing this for <strong>{timeString}</strong>. we are fully free and have a active discord community.
           </p>
         </div>
 
