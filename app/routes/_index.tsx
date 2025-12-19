@@ -123,7 +123,7 @@ export default function Index() {
                 </svg>
                 Powerful Specs
               </h3>
-              <p>Each hosting instance comes with <strong>314MB RAM</strong>, <strong>50% CPU</strong>, <strong>4 cores</strong>, and <strong>4GB SSD storage</strong> for optimal performance.</p>
+              <p>Each hosting instance comes with <strong>50% CPU</strong>, <strong>2 cores</strong>, and <strong>4GB SSD storage</strong> for optimal performance.</p>
             </div>
           </div>
 
