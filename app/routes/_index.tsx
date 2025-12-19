@@ -5,11 +5,6 @@ export default function Index() {
 
   useEffect(() => {
     function updateCounter() {
-      const domain = window.location.hostname;
-      if (domain === "vapp.uk") {
-        window.location.href = "https://vapp.uk";
-      }
-
       // Target Date: Sunday, 7 September 2025 20:26:00
       const start = new Date(2025, 8, 7, 20, 26, 0); // Month is 0-indexed (8 = September)
       const now = new Date();
@@ -149,7 +144,12 @@ export default function Index() {
                 boxShadow: '8px 8px 0px #fb923c',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🆓</div>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="#fb923c" strokeWidth="2"/>
+                    <path d="M9 12l2 2 4-4" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>100% Free</h4>
                 <p style={{ fontSize: '0.9rem' }}>No hidden fees, no premium tiers. Just free hosting for everyone.</p>
               </div>
@@ -161,7 +161,11 @@ export default function Index() {
                 boxShadow: '8px 8px 0px #fb923c',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⚡</div>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Lightning Fast</h4>
                 <p style={{ fontSize: '0.9rem' }}>High-performance SSD storage with dedicated CPU cores for instant bot responses.</p>
               </div>
@@ -173,7 +177,11 @@ export default function Index() {
                 boxShadow: '8px 8px 0px #fb923c',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🛡️</div>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Secure & SSL</h4>
                 <p style={{ fontSize: '0.9rem' }}>HTTPS encryption included for all your hosted content.</p>
               </div>
@@ -185,9 +193,49 @@ export default function Index() {
                 boxShadow: '8px 8px 0px #fb923c',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💬</div>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3m7-10h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3m-7-10V5a2 2 0 0 0 2 2h3M7 16V9a2 2 0 0 1 2-2h3" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Community Support</h4>
                 <p style={{ fontSize: '0.9rem' }}>Join our Discord for help, updates, and bot developer community.</p>
+              </div>
+
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 3v5h-5" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 16H3v5" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>24/7 Uptime</h4>
+                <p style={{ fontSize: '0.9rem' }}>Your bots stay online around the clock with our reliable infrastructure.</p>
+              </div>
+
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3" stroke="#fb923c" strokeWidth="2"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Easy Setup</h4>
+                <p style={{ fontSize: '0.9rem' }}>Get your bot running in minutes with our simple deployment process.</p>
               </div>
             </div>
           </div>
@@ -220,10 +268,12 @@ export default function Index() {
               Ready to host with us? It's simple:
             </p>
             <ol style={{ paddingLeft: '1.5rem', color: '#166534' }}>
-              <li style={{ marginBottom: '0.5rem' }}>1. Join our Discord server</li>
-              <li style={{ marginBottom: '0.5rem' }}>2. Create your account</li>
-              <li style={{ marginBottom: '0.5rem' }}>3. Upload your files or connect your bot</li>
-              <li>4. Your site/bot goes live instantly!</li>
+              <li style={{ marginBottom: '0.5rem' }}>Join our Discord server</li>
+              <li style={{ marginBottom: '0.5rem' }}>Create your account</li>
+              <li style={{ marginBottom: '0.5rem' }}>Create a server</li>
+              <li style={{ marginBottom: '0.5rem' }}>Login on the dashboard</li>
+              <li style={{ marginBottom: '0.5rem' }}>Upload your files to the server</li>
+              <li>Start your bot and go live!</li>
             </ol>
           </div>
         </div>
