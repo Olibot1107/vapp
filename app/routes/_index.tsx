@@ -33,7 +33,7 @@ export default function Index() {
 
     // Run once and then update every 10 seconds (less frequent updates)
     updateCounter();
-    const interval = setInterval(updateCounter, 10000);
+    const interval = setInterval(updateCounter, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -56,7 +56,7 @@ export default function Index() {
           textTransform: 'uppercase',
           letterSpacing: '-0.02em'
         }}>
-          Welcome!
+          Oh Hi!
         </h1>
 
         <div style={{
