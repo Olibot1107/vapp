@@ -59,9 +59,18 @@ export default function Index() {
           Welcome!
         </h1>
 
-        <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>
-          Voidium specializes in <strong>Discord bot hosting</strong> and has been providing reliable hosting for <strong>{timeString}</strong>. We keep your bots online 24/7 so you can focus on coding amazing features. Join our Discord to create your account and get started!
-        </p>
+        <div style={{
+          border: '4px solid #1a1a1a',
+          background: 'white',
+          padding: '2rem',
+          boxShadow: '8px 8px 0px #fb923c',
+          marginBottom: '3rem',
+          textAlign: 'center'
+        }}>
+          <p style={{ fontSize: '1.2rem', margin: '0', lineHeight: '1.6' }}>
+            Voidium specializes in <strong>Discord bot hosting</strong> and has been providing reliable hosting for <strong>{timeString}</strong>. We keep your bots online 24/7 so you can focus on coding amazing features. Join our Discord to create your account and get started!
+          </p>
+        </div>
 
         <div style={{ marginBottom: '3rem' }}>
           <h2 style={{
