@@ -36,9 +36,9 @@ export default function Index() {
       setTimeString(`${years} years, ${months} months, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`);
     }
 
-    // Run once and then update every second
+    // Run once and then update every 10 seconds (less frequent updates)
     updateCounter();
-    const interval = setInterval(updateCounter, 1000);
+    const interval = setInterval(updateCounter, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -126,9 +126,9 @@ export default function Index() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Fast & Reliable
+                Powerful Specs
               </h3>
-              <p>99.9% uptime guarantee with SSD storage and global CDN for lightning-fast bot responses and website loading.</p>
+              <p>Each hosting instance comes with <strong>314MB RAM</strong>, <strong>50% CPU</strong>, <strong>4 cores</strong>, and <strong>4GB SSD storage</strong> for optimal performance.</p>
             </div>
           </div>
 
@@ -136,17 +136,60 @@ export default function Index() {
             <h3 style={{
               fontSize: '1.5rem',
               fontWeight: '900',
-              marginBottom: '1rem',
+              marginBottom: '1.5rem',
               textTransform: 'uppercase'
             }}>
               Why Choose Voidium?
             </h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              <li style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>✅ <strong>Free Only:</strong> Get started with our generous free hosting plan</li>
-              <li style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>✅ <strong>No Setup Fees:</strong> Zero hidden costs or surprise charges</li>
-              <li style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>✅ <strong>Community Support:</strong> Join our Discord for help and updates</li>
-              <li style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>✅ <strong>SSL Included:</strong> HTTPS encryption for all sites</li>
-            </ul>
+            <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🆓</div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>100% Free</h4>
+                <p style={{ fontSize: '0.9rem' }}>No hidden fees, no premium tiers. Just free hosting for everyone.</p>
+              </div>
+
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⚡</div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Lightning Fast</h4>
+                <p style={{ fontSize: '0.9rem' }}>High-performance SSD storage with dedicated CPU cores for instant bot responses.</p>
+              </div>
+
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🛡️</div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Secure & SSL</h4>
+                <p style={{ fontSize: '0.9rem' }}>HTTPS encryption included for all your hosted content.</p>
+              </div>
+
+              <div style={{
+                border: '4px solid #1a1a1a',
+                background: 'white',
+                padding: '1.5rem',
+                boxShadow: '8px 8px 0px #fb923c',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💬</div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '0.5rem' }}>Community Support</h4>
+                <p style={{ fontSize: '0.9rem' }}>Join our Discord for help, updates, and bot developer community.</p>
+              </div>
+            </div>
           </div>
 
           <div style={{
