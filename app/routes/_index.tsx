@@ -79,7 +79,7 @@ export default function Index() {
 
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <p style={{ fontSize: '1.2rem', marginBottom: '1rem', lineHeight: '1.6' }}>
-            Hey we are voidium a hosting comapny we have been doing this for <strong>{timeString}</strong>. we are fully free and have a active discord community.
+            Hey we are voidium a hosting comapny that is fully free we have been doing this for <strong>{timeString}</strong>
           </p>
         </div>
 
