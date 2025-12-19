@@ -1,4 +1,22 @@
 import { useEffect, useState } from "react";
+import type { MetaFunction } from "@remix-run/cloudflare";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Voidium - Free Discord Bot Hosting" },
+    { name: "description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free with Voidium!" },
+    { name: "og:title", content: "Voidium - Free Discord Bot Hosting" },
+    { name: "og:description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free!" },
+    { name: "og:image", content: "https://olibot1107.github.io/Oli-cdn/cdn/Untitled-1.png" },
+    { name: "og:url", content: "https://vapp.uk" },
+    { name: "og:type", content: "website" },
+    { name: "og:site_name", content: "Voidium Hosting" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "Voidium - Free Discord Bot Hosting" },
+    { name: "twitter:description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free!" },
+    { name: "twitter:image", content: "https://olibot1107.github.io/Oli-cdn/cdn/Untitled-1.png" }
+  ];
+};
 
 export default function Index() {
   const [timeString, setTimeString] = useState("");
