@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react";
+import { Link } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/cloudflare";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ matches }) => {
+  const rootData = matches.find((match) => match.id === "root")?.data as
+    | { origin?: unknown }
+    | undefined;
+  const origin = typeof rootData?.origin === "string" ? rootData.origin : "https://vapp.uk";
+  const ogImage = `${origin}/og.png`;
+  const ogIcon = `${origin}/icon.png`;
   return [
     { title: "Voidium - Free Discord Bot Hosting" },
     { name: "description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free with Voidium!" },
-    { name: "og:title", content: "Voidium - Free Discord Bot Hosting" },
-    { name: "og:description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free!" },
-    { name: "og:image", content: "https://olibot1107.github.io/Oli-cdn/cdn/Untitled-1.png" },
-    { name: "og:url", content: "https://vapp.uk" },
-    { name: "og:type", content: "website" },
-    { name: "og:site_name", content: "Voidium Hosting" },
+    { property: "og:title", content: "Voidium - Free Discord Bot Hosting" },
+    { property: "og:description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free!" },
+    { property: "og:image", content: ogImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "Voidium Hosting" },
+    { property: "og:image", content: ogIcon },
+    { property: "og:image:width", content: "512" },
+    { property: "og:image:height", content: "512" },
+    { property: "og:url", content: `${origin}/` },
+    { property: "og:type", content: "website" },
+    { property: "og:site_name", content: "Voidium Hosting" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Voidium - Free Discord Bot Hosting" },
     { name: "twitter:description", content: "Free Discord bot hosting with 24/7 uptime, powerful specs, and community support. Host your bots online for free!" },
-    { name: "twitter:image", content: "https://olibot1107.github.io/Oli-cdn/cdn/Untitled-1.png" }
+    { name: "twitter:image", content: ogImage },
+    { name: "twitter:image:alt", content: "Voidium Hosting" }
   ];
 };
 
@@ -77,10 +91,34 @@ export default function Index() {
           Oh Hi!
         </h1>
 
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '1.2rem', marginBottom: '1rem', lineHeight: '1.6' }}>
-            Hey we are voidium a hosting comapny that is fully free we have been doing this for <strong>{timeString}</strong>
-          </p>
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{
+            border: '4px solid #1a1a1a',
+            background: 'white',
+            padding: '1.25rem 1.5rem',
+            boxShadow: '8px 8px 0px #fb923c',
+            textAlign: 'center'
+          }}>
+            <p style={{
+              fontSize: '1.25rem',
+              fontWeight: '900',
+              margin: 0,
+              lineHeight: '1.4',
+              textTransform: 'uppercase',
+              letterSpacing: '-0.01em'
+            }}>
+              Hey we are voidium a hosting comapny that is fully free we have been doing this for{" "}
+              <span style={{
+                background: '#fb923c',
+                padding: '0.15rem 0.35rem',
+                border: '3px solid #1a1a1a',
+                boxShadow: '4px 4px 0px #1a1a1a',
+                display: 'inline-block'
+              }}>
+                {timeString}
+              </span>
+            </p>
+          </div>
         </div>
 
         <div style={{ marginBottom: '2rem' }}>
@@ -140,44 +178,54 @@ export default function Index() {
         </div>
 
         <div style={{
-          border: '4px solid #1a1a1a',
-          background: '#dcfce7',
-          padding: '1.5rem',
-          boxShadow: '8px 8px 0px #22c55e',
-          marginBottom: '2rem'
+          display: 'grid',
+          gap: '1rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          alignItems: 'stretch'
         }}>
-          <h3 style={{
-            fontSize: '1.5rem',
-            fontWeight: '900',
-            marginBottom: '1rem',
-            color: '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Getting Started
-          </h3>
-          <p style={{ marginBottom: '1rem', color: '#166534' }}>
-            Ready to host your bot? It's simple:
-          </p>
-          <ol style={{ paddingLeft: '1.5rem', color: '#166534' }}>
-            <li style={{ marginBottom: '0.5rem' }}>Join our Discord server</li>
-            <li style={{ marginBottom: '0.5rem' }}>Create your account</li>
-            <li style={{ marginBottom: '0.5rem' }}>Create a server</li>
-            <li style={{ marginBottom: '0.5rem' }}>Login on the dashboard</li>
-            <li style={{ marginBottom: '0.5rem' }}>Upload your bot files</li>
-            <li>Start your bot and go live!</li>
-          </ol>
-        </div>
+          <Link to="/docs" style={{ textDecoration: 'none' }}>
+            <button
+              style={{
+                background: 'white',
+                color: '#1a1a1a',
+                border: '4px solid #1a1a1a',
+                padding: '1rem 2rem',
+                fontWeight: '900',
+                fontSize: '1.1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                cursor: 'pointer',
+                boxShadow: '8px 8px 0px #1a1a1a',
+                transition: 'all 0.1s ease',
+                borderRadius: '0',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '68px'
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(0px, 0px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
+              }}
+              onMouseDown={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
+              }}
+              onMouseUp={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+              }}
+            >
+              Docs
+            </button>
+          </Link>
 
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <a href="https://hosting.voidium.uk" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="https://panel.voidium.uk" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <button
               style={{
                 background: '#fb923c',
@@ -191,30 +239,77 @@ export default function Index() {
                 cursor: 'pointer',
                 boxShadow: '8px 8px 0px #1a1a1a',
                 transition: 'all 0.1s ease',
-                borderRadius: '0'
+                borderRadius: '0',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '68px'
               }}
               onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(-2px, -2px)';
-                (e.target as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
               }}
               onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(0px, 0px)';
-                (e.target as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(0px, 0px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
               }}
               onMouseDown={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(2px, 2px)';
-                (e.target as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
               }}
               onMouseUp={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(-2px, -2px)';
-                (e.target as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
               }}
             >
-              Go to hosting.voidium.uk
+              Panel
             </button>
           </a>
 
-          <a href="https://discord.gg/E2Kywq9Uk5" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="https://status.voidium.uk" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <button
+              style={{
+                background: '#0ea5e9',
+                color: '#1a1a1a',
+                border: '4px solid #1a1a1a',
+                padding: '1rem 2rem',
+                fontWeight: '900',
+                fontSize: '1.1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                cursor: 'pointer',
+                boxShadow: '8px 8px 0px #1a1a1a',
+                transition: 'all 0.1s ease',
+                borderRadius: '0',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '68px'
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(0px, 0px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
+              }}
+              onMouseDown={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
+              }}
+              onMouseUp={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+              }}
+            >
+              Status
+            </button>
+          </a>
+
+          <a href="https://discord.gg/8cdxBEXnbS" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <button
               style={{
                 background: '#5865f2',
@@ -228,26 +323,31 @@ export default function Index() {
                 cursor: 'pointer',
                 boxShadow: '8px 8px 0px #1a1a1a',
                 transition: 'all 0.1s ease',
-                borderRadius: '0'
+                borderRadius: '0',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '68px'
               }}
               onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(-2px, -2px)';
-                (e.target as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
               }}
               onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(0px, 0px)';
-                (e.target as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(0px, 0px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '8px 8px 0px #1a1a1a';
               }}
               onMouseDown={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(2px, 2px)';
-                (e.target as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #1a1a1a';
               }}
               onMouseUp={(e) => {
-                (e.target as HTMLElement).style.transform = 'translate(-2px, -2px)';
-                (e.target as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
+                (e.currentTarget as HTMLElement).style.transform = 'translate(-2px, -2px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '12px 12px 0px #1a1a1a';
               }}
             >
-              Join Discord
+              Discord
             </button>
           </a>
         </div>
