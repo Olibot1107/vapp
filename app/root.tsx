@@ -5,10 +5,18 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { json, redirect, type LoaderFunctionArgs } from "@remix-run/cloudflare";
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
+
+  if (url.hostname === "vapp.uk" || url.hostname === "www.vapp.uk") {
+    const target = new URL(url.toString());
+    target.hostname = "voidium.uk";
+    target.protocol = "https:";
+    return redirect(target.toString(), 301);
+  }
+
   return json({ origin: url.origin });
 };
 

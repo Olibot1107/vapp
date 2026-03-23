@@ -6,7 +6,7 @@ export const meta: MetaFunction = ({ matches }) => {
   const rootData = matches.find((match) => match.id === "root")?.data as
     | { origin?: unknown }
     | undefined;
-  const origin = typeof rootData?.origin === "string" ? rootData.origin : "https://vapp.uk";
+  const origin = typeof rootData?.origin === "string" ? rootData.origin : "https://voidium.uk";
   const ogImage = `${origin}/og.png`;
   const ogIcon = `${origin}/icon.png`;
   return [
