@@ -54,10 +54,22 @@ type ApiNode = {
   history?: ApiHistoryPoint[];
 };
 
+type UiNode = ApiNode & {
+  __sources?: {
+    uptimeBars?: "api" | "fallback" | "none";
+    history?: "api" | "fallback" | "none";
+  };
+};
+
 type ApiStatusResponse = {
   summary?: unknown;
   service?: unknown;
   nodes?: ApiNode[];
+};
+
+type ApiPingHistoryResponse = {
+  history?: ApiHistoryPoint[];
+  uptimeBars?: ApiNode["uptimeBars"];
 };
 
 type DayRow<T> = {
@@ -171,6 +183,29 @@ function formatUpdatedAt(iso: string | undefined): string | undefined {
   }).format(date);
 }
 
+function formatUtcTime(iso: string | undefined): string | undefined {
+  if (!iso) return undefined;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+function uptimeBarTitle(bar: { fromAt?: string; toAt?: string; uptimePercent?: number | null }, barState: StatusState): string {
+  const parts: string[] = [stateLabel(barState)];
+  const pct = formatPercent(bar.uptimePercent);
+  if (pct) parts.push(pct);
+
+  const from = formatUtcTime(bar.fromAt);
+  const to = formatUtcTime(bar.toAt);
+  if (from && to) parts.push(`${from}–${to} UTC`);
+
+  return parts.join(" • ");
+}
+
 function formatAgo(thenIso: string | undefined, baseIso: string): string | undefined {
   if (!thenIso) return undefined;
   const then = new Date(thenIso);
@@ -215,6 +250,34 @@ function stateColor(state: StatusState): { bg: string; border: string } {
   return { bg: "#a3a3a3", border: "#525252" };
 }
 
+function barStateFromUptimePercent(percent: number | null | undefined): StatusState | undefined {
+  if (typeof percent !== "number" || !Number.isFinite(percent)) return undefined;
+  if (percent >= 99.5) return "operational";
+  if (percent <= 0.5) return "offline";
+  return "maintenance";
+}
+
+function barVisualState({
+  bar,
+  isLatest,
+  nodeState,
+}: {
+  bar: { state?: StatusState; uptimePercent?: number | null };
+  isLatest: boolean;
+  nodeState: StatusState;
+}): StatusState {
+  if (isLatest) return nodeState;
+
+  const byPercent = barStateFromUptimePercent(bar.uptimePercent);
+  if (byPercent) return byPercent;
+
+  // If the API reports "maintenance" for every bucket when you flip the node
+  // into maintenance, don't repaint the entire history orange.
+  const reported = normalizeState(bar.state);
+  if (reported !== "maintenance") return reported;
+  return "unknown";
+}
+
 function renderJson(value: unknown): string {
   try {
     return JSON.stringify(value, null, 2) ?? "";
@@ -254,7 +317,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const apiUrl = new URL("https://status-api.voidium.uk/api/status");
   apiUrl.searchParams.set("range", range);
-  apiUrl.searchParams.set("include", "history,uptimeBars");
 
   try {
     const response = await fetch(apiUrl.toString(), {
@@ -274,7 +336,61 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
 
     const data = (await response.json()) as ApiStatusResponse;
-    const nodes = Array.isArray(data?.nodes) ? data.nodes : [];
+    const nodesBase = Array.isArray(data?.nodes) ? data.nodes : [];
+
+    const nodes: UiNode[] = await Promise.all(
+      nodesBase.map(async (node) => {
+        const id = node.panel?.id;
+        if (id === undefined || id === null || id === "") {
+          return {
+            ...node,
+            __sources: { history: Array.isArray(node.history) ? "fallback" : "none", uptimeBars: Array.isArray(node.uptimeBars) ? "fallback" : "none" },
+          };
+        }
+
+        const nodeApiUrl = new URL(`https://status-api.voidium.uk/api/nodes/${id}/ping-history`);
+        nodeApiUrl.searchParams.set("range", range);
+        nodeApiUrl.searchParams.set("history", "1");
+        nodeApiUrl.searchParams.set("historyRaw", "0");
+        nodeApiUrl.searchParams.set("uptimeBars", "1");
+
+        try {
+          const extraResponse = await fetch(nodeApiUrl.toString(), {
+            headers: { Accept: "application/json" },
+          });
+          if (!extraResponse.ok) {
+            return {
+              ...node,
+              __sources: {
+                history: Array.isArray(node.history) ? "fallback" : "none",
+                uptimeBars: Array.isArray(node.uptimeBars) ? "fallback" : "none",
+              },
+            };
+          }
+          const extra = (await extraResponse.json()) as ApiPingHistoryResponse;
+          const historyFromApi = Array.isArray(extra?.history);
+          const barsFromApi = Array.isArray(extra?.uptimeBars);
+
+          return {
+            ...node,
+            history: historyFromApi ? extra.history : node.history,
+            uptimeBars: barsFromApi ? extra.uptimeBars : node.uptimeBars,
+            __sources: {
+              history: historyFromApi ? "api" : Array.isArray(node.history) ? "fallback" : "none",
+              uptimeBars: barsFromApi ? "api" : Array.isArray(node.uptimeBars) ? "fallback" : "none",
+            },
+          };
+        } catch {
+          return {
+            ...node,
+            __sources: {
+              history: Array.isArray(node.history) ? "fallback" : "none",
+              uptimeBars: Array.isArray(node.uptimeBars) ? "fallback" : "none",
+            },
+          };
+        }
+      }),
+    );
 
     return json(
       {
@@ -518,16 +634,30 @@ export default function StatusPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <span
                   style={{
-                    display: "inline-block",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "10px",
                     padding: "0.2rem 0.55rem",
-                    border: `3px solid ${stateColor(data.state).border}`,
-                    background: stateColor(data.state).bg,
+                    border: "3px solid #1a1a1a",
+                    background: "white",
                     boxShadow: "4px 4px 0px #1a1a1a",
                     fontWeight: 900,
                     textTransform: "uppercase",
                     letterSpacing: "0.04em",
                   }}
                 >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "999px",
+                      border: "2px solid #1a1a1a",
+                      background: stateColor(data.state).bg,
+                      boxShadow: "2px 2px 0px #1a1a1a",
+                      flex: "0 0 auto",
+                    }}
+                  />
                   {stateLabel(data.state)}
                 </span>
                 <span style={{ fontWeight: 900, textTransform: "uppercase" }}>
@@ -652,10 +782,12 @@ export default function StatusPage() {
                       <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
                         <span
                           style={{
-                            display: "inline-block",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "8px",
                             padding: "0.15rem 0.45rem",
-                            border: `3px solid ${stateColor(state).border}`,
-                            background: stateColor(state).bg,
+                            border: "3px solid #1a1a1a",
+                            background: "white",
                             boxShadow: "3px 3px 0px #1a1a1a",
                             fontWeight: 900,
                             textTransform: "uppercase",
@@ -664,6 +796,18 @@ export default function StatusPage() {
                             whiteSpace: "nowrap",
                           }}
                         >
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              width: "9px",
+                              height: "9px",
+                              borderRadius: "999px",
+                              border: "2px solid #1a1a1a",
+                              background: stateColor(state).bg,
+                              boxShadow: "2px 2px 0px #1a1a1a",
+                              flex: "0 0 auto",
+                            }}
+                          />
                           {stateLabel(state)}
                         </span>
                         <button
@@ -765,92 +909,118 @@ export default function StatusPage() {
                         {lastOfflineAgo ? <span style={{ ...pillStyle }}>Last offline {lastOfflineAgo}</span> : null}
                       </div>
 
-                        {Array.isArray(node.uptimeBars) && node.uptimeBars.length > 0 ? (
-                          <div style={{ marginTop: "1.1rem" }}>
-                            <div style={{ fontWeight: 900, textTransform: "uppercase", fontSize: "0.85rem" }}>
-                              Uptime bars
-                            </div>
-                            {data.range === "7d" ? (
-                              <div style={{ marginTop: "0.75rem", display: "grid", gap: "12px" }}>
-                                {groupByUtcDay(node.uptimeBars, (b) => b.toAt ?? b.fromAt).map((row) => (
+                      {Array.isArray(node.uptimeBars) && node.uptimeBars.length > 0
+                        ? (() => {
+                            const uptimeBars = node.uptimeBars;
+                            return (
+                              <div style={{ marginTop: "1.1rem" }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                    flexWrap: "wrap",
+                                  }}
+                                >
+                                  <div style={{ fontWeight: 900, textTransform: "uppercase", fontSize: "0.85rem" }}>
+                                    Uptime bars
+                                  </div>
+                                  {node.__sources?.uptimeBars ? (
+                                    <span style={{ ...pillStyle, fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}>
+                                      Bars {node.__sources.uptimeBars === "api" ? "API" : node.__sources.uptimeBars}
+                                    </span>
+                                  ) : null}
+                                </div>
+                                {data.range === "7d" ? (
+                                  <div style={{ marginTop: "0.75rem", display: "grid", gap: "12px" }}>
+                                    {(() => {
+                                      const indexedBars = uptimeBars.map((bar, __index) => ({ ...bar, __index }));
+                                      const latestIndex = indexedBars.length - 1;
+                                      return groupByUtcDay(indexedBars, (b) => b.toAt ?? b.fromAt).map((row) => (
+                                        <div
+                                          key={row.key}
+                                          style={{
+                                            display: "grid",
+                                            gridTemplateColumns: "90px 1fr",
+                                            gap: "12px",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <div
+                                            title={row.title}
+                                            style={{
+                                              fontWeight: 900,
+                                              textTransform: "uppercase",
+                                              letterSpacing: "0.04em",
+                                              fontSize: "0.85rem",
+                                            }}
+                                          >
+                                            {row.label}
+                                          </div>
+                                          <div
+                                            style={{
+                                              display: "grid",
+                                              gridTemplateColumns: `repeat(${row.items.length}, minmax(0, 1fr))`,
+                                              columnGap: "4px",
+                                              width: "100%",
+                                            }}
+                                          >
+                                            {row.items.map((bar, barIdx) => {
+                                              const isLatest = bar.__index === latestIndex;
+                                              const barState = barVisualState({ bar, isLatest, nodeState: state });
+                                              return (
+                                                <span
+                                                  key={barIdx}
+                                                  title={uptimeBarTitle(bar, barState)}
+                                                  style={{
+                                                    width: "100%",
+                                                    height: "16px",
+                                                    display: "inline-block",
+                                                    border: `2px solid ${stateColor(barState).border}`,
+                                                    background: stateColor(barState).bg,
+                                                  }}
+                                                />
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      ));
+                                    })()}
+                                  </div>
+                                ) : (
                                   <div
-                                    key={row.key}
                                     style={{
                                       display: "grid",
-                                      gridTemplateColumns: "90px 1fr",
-                                      gap: "12px",
-                                      alignItems: "center",
+                                      gridTemplateColumns: `repeat(${uptimeBars.length}, minmax(0, 1fr))`,
+                                      columnGap: "6px",
+                                      marginTop: "0.5rem",
+                                      width: "100%",
                                     }}
                                   >
-                                    <div
-                                      title={row.title}
-                                      style={{
-                                        fontWeight: 900,
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.04em",
-                                        fontSize: "0.85rem",
-                                      }}
-                                    >
-                                      {row.label}
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: `repeat(${row.items.length}, minmax(0, 1fr))`,
-                                        columnGap: "4px",
-                                        width: "100%",
-                                      }}
-                                    >
-                                      {row.items.map((bar, barIdx) => {
-                                        const barState = normalizeState(bar.state);
-                                        return (
-                                          <span
-                                            key={barIdx}
-                                            title={`${stateLabel(barState)} • ${formatPercent(bar.uptimePercent) ?? "—"}`}
-                                            style={{
-                                              width: "100%",
-                                              height: "16px",
-                                              display: "inline-block",
-                                              border: `2px solid ${stateColor(barState).border}`,
-                                              background: stateColor(barState).bg,
-                                            }}
-                                          />
-                                        );
-                                      })}
-                                    </div>
+                                    {uptimeBars.map((bar, barIdx) => {
+                                      const isLatest = barIdx === uptimeBars.length - 1;
+                                      const barState = barVisualState({ bar, isLatest, nodeState: state });
+                                      return (
+                                        <span
+                                          key={barIdx}
+                                          title={uptimeBarTitle(bar, barState)}
+                                          style={{
+                                            width: "100%",
+                                            height: "24px",
+                                            display: "inline-block",
+                                            border: `2px solid ${stateColor(barState).border}`,
+                                            background: stateColor(barState).bg,
+                                          }}
+                                        />
+                                      );
+                                    })}
                                   </div>
-                                ))}
+                                )}
                               </div>
-                            ) : (
-                              <div
-                                style={{
-                                  display: "grid",
-                                  gridTemplateColumns: `repeat(${node.uptimeBars.length}, minmax(0, 1fr))`,
-                                  columnGap: "6px",
-                                  marginTop: "0.5rem",
-                                  width: "100%",
-                                }}
-                              >
-                                {node.uptimeBars.map((bar, barIdx) => {
-                                  const barState = normalizeState(bar.state);
-                                  return (
-                                    <span
-                                      key={barIdx}
-                                      title={`${stateLabel(barState)} • ${formatPercent(bar.uptimePercent) ?? "—"}`}
-                                      style={{
-                                        width: "100%",
-                                        height: "24px",
-                                        display: "inline-block",
-                                        border: `2px solid ${stateColor(barState).border}`,
-                                        background: stateColor(barState).bg,
-                                      }}
-                                    />
-                                  );
-                                })}
-                              </div>
-                            )}
-                        </div>
-                      ) : null}
+                            );
+                          })()
+                        : null}
 
                       {err ? (
                         <div style={{ marginTop: "0.85rem", fontWeight: 900, fontSize: "0.9rem" }}>
@@ -861,8 +1031,23 @@ export default function StatusPage() {
 
                     {isExpanded ? (
                       <div style={{ marginTop: "1.1rem" }}>
-                        <div style={{ fontWeight: 900, textTransform: "uppercase", fontSize: "0.85rem" }}>
-                          Ping (ms)
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "10px",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <div style={{ fontWeight: 900, textTransform: "uppercase", fontSize: "0.85rem" }}>
+                            Ping (ms)
+                          </div>
+                          {node.__sources?.history ? (
+                            <span style={{ ...pillStyle, fontSize: "0.8rem", padding: "0.25rem 0.5rem" }}>
+                              Ping {node.__sources.history === "api" ? "API" : node.__sources.history}
+                            </span>
+                          ) : null}
                         </div>
 
                         {Array.isArray(node.history) && node.history.length > 0 ? (
