@@ -69,6 +69,7 @@ type ApiStatusResponse = {
 
 type ApiPingHistoryResponse = {
   history?: ApiHistoryPoint[];
+  historyRaw?: ApiHistoryPoint[];
   uptimeBars?: ApiNode["uptimeBars"];
 };
 
@@ -271,8 +272,6 @@ function barVisualState({
   const byPercent = barStateFromUptimePercent(bar.uptimePercent);
   if (byPercent) return byPercent;
 
-  // If the API reports "maintenance" for every bucket when you flip the node
-  // into maintenance, don't repaint the entire history orange.
   const reported = normalizeState(bar.state);
   if (reported !== "maintenance") return reported;
   return "unknown";
@@ -344,14 +343,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         if (id === undefined || id === null || id === "") {
           return {
             ...node,
-            __sources: { history: Array.isArray(node.history) ? "fallback" : "none", uptimeBars: Array.isArray(node.uptimeBars) ? "fallback" : "none" },
+            __sources: {
+              history: Array.isArray(node.history) ? "fallback" : "none",
+              uptimeBars: Array.isArray(node.uptimeBars) ? "fallback" : "none",
+            },
           };
         }
 
         const nodeApiUrl = new URL(`https://status-api.voidium.uk/api/nodes/${id}/ping-history`);
         nodeApiUrl.searchParams.set("range", range);
-        nodeApiUrl.searchParams.set("history", "1");
-        nodeApiUrl.searchParams.set("historyRaw", "0");
+        nodeApiUrl.searchParams.set("history", "0");
+        nodeApiUrl.searchParams.set("historyRaw", "1");
         nodeApiUrl.searchParams.set("uptimeBars", "1");
 
         try {
@@ -367,16 +369,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
               },
             };
           }
+
           const extra = (await extraResponse.json()) as ApiPingHistoryResponse;
+          const historyRawFromApi = Array.isArray(extra?.historyRaw);
           const historyFromApi = Array.isArray(extra?.history);
           const barsFromApi = Array.isArray(extra?.uptimeBars);
 
+          const mergedHistory = historyRawFromApi
+            ? extra.historyRaw
+            : historyFromApi
+              ? extra.history
+              : node.history;
+
           return {
             ...node,
-            history: historyFromApi ? extra.history : node.history,
+            history: mergedHistory,
             uptimeBars: barsFromApi ? extra.uptimeBars : node.uptimeBars,
             __sources: {
-              history: historyFromApi ? "api" : Array.isArray(node.history) ? "fallback" : "none",
+              history: historyRawFromApi || historyFromApi ? "api" : Array.isArray(node.history) ? "fallback" : "none",
               uptimeBars: barsFromApi ? "api" : Array.isArray(node.uptimeBars) ? "fallback" : "none",
             },
           };
@@ -836,67 +846,20 @@ export default function StatusPage() {
 
                     <div style={{ marginTop: "1rem" }}>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                        {uptime ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Uptime {uptime}
-                          </span>
-                        ) : null}
-                        {latency ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Latency {latency}
-                          </span>
-                        ) : null}
-                        {downtime ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Downtime {downtime}
-                          </span>
-                        ) : null}
+                        {uptime ? <span style={{ ...pillStyle }}>Uptime {uptime}</span> : null}
+                        {latency ? <span style={{ ...pillStyle }}>Latency {latency}</span> : null}
+                        {downtime ? <span style={{ ...pillStyle }}>Downtime {downtime}</span> : null}
                         {typeof incidents === "number" ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Incidents {incidents}
-                          </span>
+                          <span style={{ ...pillStyle }}>Incidents {incidents}</span>
                         ) : null}
                         {typeof memoryGb === "number" ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Mem {memoryGb.toFixed(1)}GB
-                          </span>
+                          <span style={{ ...pillStyle }}>Mem {memoryGb.toFixed(1)}GB</span>
                         ) : null}
                         {typeof diskGb === "number" ? (
-                          <span
-                            style={{
-                              ...pillStyle,
-                            }}
-                          >
-                            Disk {diskGb.toFixed(1)}GB
-                          </span>
+                          <span style={{ ...pillStyle }}>Disk {diskGb.toFixed(1)}GB</span>
                         ) : null}
                         {location ? (
-                          <span
-                            style={{
-                              ...pillStyleTruncated,
-                            }}
-                            title={location}
-                          >
+                          <span style={{ ...pillStyleTruncated }} title={location}>
                             Host {location}
                           </span>
                         ) : null}
@@ -932,6 +895,7 @@ export default function StatusPage() {
                                     </span>
                                   ) : null}
                                 </div>
+
                                 {data.range === "7d" ? (
                                   <div style={{ marginTop: "0.75rem", display: "grid", gap: "12px" }}>
                                     {(() => {
@@ -1060,7 +1024,7 @@ export default function StatusPage() {
 
                             const sparkHeight = data.range === "7d" ? 44 : 56;
                             const viewAll =
-                              data.range === "7d" ? downsampleEven(points, 7 * 96) : downsampleEven(points, 160);
+                              data.range === "7d" ? downsampleEven(points, 7 * 96) : downsampleEven(points, 24 * 60);
 
                             const splitSegments = (values: Array<number | null>) => {
                               const segments: Array<{ start: number; values: number[] }> = [];
@@ -1105,33 +1069,12 @@ export default function StatusPage() {
                             };
 
                             const renderSparkline = (rowPoints: ApiHistoryPoint[]) => {
-                              const view = downsampleEven(rowPoints, data.range === "7d" ? 96 : 160);
-                              const valuesRaw = view.map((p) =>
+                              const view = downsampleEven(rowPoints, data.range === "7d" ? 96 : 24 * 60);
+                              const values = view.map((p) =>
                                 typeof p.latencyMs === "number" && Number.isFinite(p.latencyMs) && p.latencyMs >= 0
                                   ? p.latencyMs
                                   : null,
                               );
-
-                              const values = (() => {
-                                if (valuesRaw.every((v) => v === null)) return valuesRaw;
-
-                                const out = valuesRaw.slice();
-                                let last: number | null = null;
-                                for (let i = 0; i < out.length; i += 1) {
-                                  const v = out[i];
-                                  if (typeof v === "number") last = v;
-                                  else if (last !== null) out[i] = last;
-                                }
-
-                                let next: number | null = null;
-                                for (let i = out.length - 1; i >= 0; i -= 1) {
-                                  const v = out[i];
-                                  if (typeof v === "number") next = v;
-                                  else if (next !== null) out[i] = next;
-                                }
-
-                                return out;
-                              })();
 
                               const { linePaths, fillPaths } = makePaths(values);
                               const width = Math.max(1, values.length - 1);
