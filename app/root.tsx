@@ -9,11 +9,18 @@ import { json, redirect, type LoaderFunctionArgs } from "@remix-run/cloudflare";
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
+  const hostname = url.hostname.toLowerCase();
 
-  if (url.hostname === "vapp.uk" || url.hostname === "www.vapp.uk") {
+  if (hostname === "vapp.uk" || hostname === "www.vapp.uk") {
     const target = new URL(url.toString());
     target.hostname = "voidium.uk";
     target.protocol = "https:";
+    return redirect(target.toString(), 301);
+  }
+
+  if (hostname === "status.voidium.uk" || hostname === "www.status.voidium.uk") {
+    const target = new URL("https://voidium.uk/status");
+    target.search = url.search;
     return redirect(target.toString(), 301);
   }
 

@@ -179,7 +179,7 @@ export default function Docs() {
             </a>
 
             <a
-              href="https://status.voidium.uk"
+              href="/status"
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: "none" }}

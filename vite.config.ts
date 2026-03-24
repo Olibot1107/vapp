@@ -12,32 +12,41 @@ declare module "@remix-run/cloudflare" {
 	}
 }
 
-export default defineConfig({
-	plugins: [
-		cloudflareDevProxyVitePlugin({
-			getLoadContext,
-			configPath: "./wrangler.jsonc",
-		}),
-		remix({
-			future: {
-				v3_fetcherPersist: true,
-				v3_relativeSplatPath: true,
-				v3_throwAbortReason: true,
-				v3_singleFetch: true,
-				v3_lazyRouteDiscovery: true,
+export default defineConfig(({ command }) => {
+	const devProxy =
+		command === "serve"
+			? [
+					cloudflareDevProxyVitePlugin({
+						getLoadContext,
+						configPath: "./wrangler.jsonc",
+					}),
+				]
+			: [];
+
+	return {
+		plugins: [
+			...devProxy,
+			remix({
+				future: {
+					v3_fetcherPersist: true,
+					v3_relativeSplatPath: true,
+					v3_throwAbortReason: true,
+					v3_singleFetch: true,
+					v3_lazyRouteDiscovery: true,
+				},
+			}),
+			tsconfigPaths(),
+		],
+		ssr: {
+			resolve: {
+				conditions: ["workerd", "worker", "browser"],
 			},
-		}),
-		tsconfigPaths(),
-	],
-	ssr: {
-		resolve: {
-			conditions: ["workerd", "worker", "browser"],
 		},
-	},
-	resolve: {
-		mainFields: ["browser", "module", "main"],
-	},
-	build: {
-		minify: true,
-	},
+		resolve: {
+			mainFields: ["browser", "module", "main"],
+		},
+		build: {
+			minify: true,
+		},
+	};
 });

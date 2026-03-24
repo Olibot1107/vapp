@@ -267,7 +267,7 @@ export default function Index() {
             </button>
           </a>
 
-          <a href="https://status.voidium.uk" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="/status" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <button
               style={{
                 background: '#0ea5e9',
