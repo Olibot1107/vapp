@@ -309,7 +309,7 @@ export default function Index() {
             </button>
           </a>
 
-          <a href="https://discord.gg/8cdxBEXnbS" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="https://discord.gg/9eM8z6j9AK" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <button
               style={{
                 background: '#5865f2',

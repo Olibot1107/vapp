@@ -226,7 +226,7 @@ export default function Docs() {
             </a>
 
             <a
-              href="https://discord.gg/8cdxBEXnbS"
+              href="https://discord.gg/9eM8z6j9AK"
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: "none" }}
